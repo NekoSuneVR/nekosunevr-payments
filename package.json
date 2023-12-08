@@ -19,7 +19,8 @@
     "dependencies": {
         "axios": "^0.21.1",
         "crypto-js": "^3.1.9-1",
-        "node-fetch": "^2.6.1"
+        "node-fetch": "^2.6.1",
+        "coinbase-commerce-node": "^1.0.4"
     },
     "types": "lib/index.d.ts"
 }
