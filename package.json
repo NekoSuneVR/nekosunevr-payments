@@ -1,6 +1,6 @@
 {
     "name": "nekosunevr-payments",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Payment System Wrapper for Easy to use System.",
     "main": "lib/index.js",
     "scripts": {
