@@ -1,27 +1,27 @@
 {
-    "name": "nekosunevr-payments",
-    "version": "1.1.1",
-    "description": "Payment System Wrapper for Easy to use System.",
-    "main": "lib/index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/NekoSuneVR/nekosunevr-payments"
-    },
-    "keywords": [
-        "paymentsystem",
-        "multigateways"
-    ],
-    "author": "NekoSuneVR",
-    "license": "MIT",
-    "dependencies": {
-        "axios": "^0.21.1",
-        "crypto-js": "^3.1.9-1",
-        "node-fetch": "^2.6.1",
-        "coinbase-commerce-node": "^1.0.4",
-        "stripe": "^14.14.0"
-    },
-    "types": "lib/index.d.ts"
+  "name": "nekosunevr-payments",
+  "version": "1.1.1",
+  "description": "Payment System Wrapper for Easy to use System.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NekoSuneVR/nekosunevr-payments"
+  },
+  "keywords": [
+    "paymentsystem",
+    "multigateways"
+  ],
+  "author": "NekoSuneVR",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "crypto-js": "^3.1.9-1",
+    "node-fetch": "^2.6.1",
+    "coinbase-commerce-node": "^1.0.4",
+    "stripe": "^14.14.0"
+  },
+  "types": "lib/index.d.ts"
 }
