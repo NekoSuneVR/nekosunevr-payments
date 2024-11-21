@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/NekoSuneVR/nekosunevr-payments-nodejs"
+        "url": "https://github.com/NekoSuneVR/nekosunevr-payments"
     },
     "keywords": [
         "paymentsystem",
