@@ -14,19 +14,6 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm publish
+      - run: yarn publish --verbose --access public --tag 1.1.1
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-          
-  publish-github:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com/
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
