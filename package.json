@@ -21,7 +21,8 @@
     "coinbase-commerce-node": "^1.0.4",
     "crypto-js": "^3.1.9-1",
     "node-fetch": "^2.6.1",
-    "stripe": "^14.14.0"
+    "stripe": "^14.14.0",
+    "dotenv": "^17.2.0"
   },
   "types": "lib/index.d.ts"
 }
