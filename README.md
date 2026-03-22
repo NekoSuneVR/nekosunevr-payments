@@ -61,7 +61,7 @@ ALIPAY_API_KEY=
 ## Exported modules
 
 ### Crypto / explorer style modules
-`HIVEENGINEModule`, `HIVEModule`, `HBDModule`, `BLURTModule`, `STEEMModule`, `SBDModule`, `TLOSModule`, `EOSModule`, `BNBModule`, `WAXModule`, `FLSModule`, `LTCModule`, `DOGECModule`, `ZNZModule`, `POLModule`, `TRXModule`, `TRONModule`, `BCHModule`, `ETHModule`, `PIVXModule`, `DOGEModule`, `SAPPModule`, `MOBICModule`, `SAGAModule`, `PNYModule`, `MONKModule`, `UCRModule`, `KYANModule`, `DASHDModule`, `OWOModule`, `SEVENSEVENSEVENModule`, `CFLModule`, `BIRModule`, `AZRModule`, `BECNModule`, `BTCModule`, `SCCModule`
+`HIVEENGINEModule`, `HIVEModule`, `HBDModule`, `BLURTModule`, `STEEMModule`, `SBDModule`, `TLOSModule`, `EOSModule`, `FIOModule`, `BNBModule`, `WAXModule`, `FLSModule`, `LTCModule`, `DOGECModule`, `ZNZModule`, `POLModule`, `TRXModule`, `TRONModule`, `BCHModule`, `ETHModule`, `PIVXModule`, `DOGEModule`, `SAPPModule`, `MOBICModule`, `SAGAModule`, `PNYModule`, `MONKModule`, `UCRModule`, `KYANModule`, `DASHDModule`, `OWOModule`, `SEVENSEVENSEVENModule`, `CFLModule`, `BIRModule`, `AZRModule`, `BECNModule`, `BTCModule`, `SCCModule`
 
 ### Payment gateway modules
 `TEBEXModule`, `COINBASEModule`, `SELLIXModule`, `CRAFTINGSTOREModule`, `STRIPEModule`, `PAYPALModule`, `XSOLLAModule`, `SKRILLModule`, `WOOModule`, `NOWPAYMENTSModule`, `OPENNODEModule`, `BITPAYModule`, `PAYONEERModule`, `PAYMENTWALLModule`, `SQUAREModule`, `WORLDPAYModule`, `AMAZONPAYModule`, `APPLEPAYModule`, `GOOGLEPAYModule`, `WECHATPAYModule`, `OFXModule`, `FORTUMOModule`, `AUTHORIZENETModule`, `ALIPAYModule`
@@ -91,6 +91,12 @@ async function checkBscUsdtPayment() {
 checkBscUsdtPayment().catch(console.error);
 ```
 
+`existsTransaction(address, amount, timestamp, memo = null, minimumConfirmations = 0)`
+
+- `minimumConfirmations` is optional
+- if you do not need a memo, you can also pass confirmations as the 4th argument
+- the returned object still includes `conf`
+
 ### 2) Coinbase example (`createPayment`)
 ```js
 const { COINBASEModule } = require('nekosunevr-payments');
@@ -108,6 +114,127 @@ async function createCoinbaseCheckout() {
 }
 
 createCoinbaseCheckout().catch(console.error);
+```
+
+## Direct chain endpoints
+
+Several chains now use direct public RPC/history endpoints instead of the old shared explorer route.
+
+### Direct Steem-family chains
+- `HIVEModule`
+- `HBDModule`
+- `STEEMModule`
+- `SBDModule`
+- `BLURTModule`
+
+These use direct RPC history lookups through their native chain clients.
+
+### Direct Antelope chains
+- `TLOSModule`
+- `EOSModule`
+- `FIOModule`
+- `WAXModule`
+
+These use direct chain/history APIs for:
+- address history lookup
+- `existsTransaction(...)`
+- direct txid lookup with `getTransaction(address, txid)`
+
+Current endpoint mapping:
+- `TLOSModule`
+  - history: `https://mainnet.telos.net/v2/history/get_actions`
+  - txid: `https://mainnet.telos.net/v2/history/get_transaction`
+  - chain/balance: `https://telos.greymass.com`
+- `EOSModule`
+  - history: `https://eos.greymass.com/v1/history/get_actions`
+  - txid: `https://eos.hyperion.eosrio.io/v2/history/get_transaction`
+  - balance: `https://api.eosauthority.com/v1/chain/get_currency_balance`
+- `WAXModule`
+  - history: `https://wax.greymass.com/v1/history/get_actions`
+  - txid: `https://wax.eosrio.io/v1/history/get_transaction`
+- `FIOModule`
+  - history: `https://fio.greymass.com/v1/history/get_actions`
+  - txid: `https://fio.greymass.com/v1/history/get_transaction`
+  - balance: `https://fio.greymass.com/v1/chain/get_fio_balance`
+
+## Antelope examples
+
+### EOS `existsTransaction`
+```js
+const { EOSModule } = require('nekosunevr-payments');
+
+async function checkEosPayment() {
+  const eos = new EOSModule();
+
+  const result = await eos.existsTransaction(
+    'genereospool',
+    '27.6561',
+    1774175642,
+    'ivote4eosusa'
+  );
+
+  console.log(result);
+}
+
+checkEosPayment().catch(console.error);
+```
+
+### WAX txid lookup
+```js
+const { WAXModule } = require('nekosunevr-payments');
+
+async function getWaxTransaction() {
+  const wax = new WAXModule();
+
+  const tx = await wax.getTransaction(
+    '4qs32.c.wam',
+    '69171f4df466654b26b43043d8e45c9176f4f6d479980a9a22ab4af8bf8adaa0'
+  );
+
+  console.log(tx);
+}
+
+getWaxTransaction().catch(console.error);
+```
+
+### Telos txid lookup
+```js
+const { TLOSModule } = require('nekosunevr-payments');
+
+async function getTelosTransaction() {
+  const tlos = new TLOSModule();
+
+  const tx = await tlos.getTransaction(
+    'wrcjejslfplp',
+    '5dc7edd4b8bbcd9e90490bc8717e6676fd0461261a602e28545a36b018841158'
+  );
+
+  console.log(tx);
+}
+
+getTelosTransaction().catch(console.error);
+```
+
+### FIO history, balance, and txid lookup
+```js
+const { FIOModule } = require('nekosunevr-payments');
+
+async function fioExamples() {
+  const fio = new FIOModule();
+
+  const txids = await fio.api.getAddressTransactions('wrcjejslfplp');
+  const balance = await fio.api.getDirectAntelopeBalances(
+    'FIO6ZkSRzzC6HFxFQmAq5MFU4xCDTTQ8NHP1TXUS7Nfu2SW3SXv7Y'
+  );
+  const tx = await fio.getTransaction(
+    'wrcjejslfplp',
+    'f61ffb0d60c6d1075e6d04c5a0d2b930f1edeefa0d3694e8a3c178f74aa98470'
+  );
+
+  console.log({ txids: txids.slice(0, 5), balance, tx });
+}
+
+fioExamples().catch(console.error);
 ```
 
 ## NOWPayments
