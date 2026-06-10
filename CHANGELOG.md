@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Changed
+- Audited and set explicit `verified` on every entry (96 verified / 59 unverified).
+  `verified:true` = bespoke/official, confirmed-reachable integration; `verified:false` =
+  generic/guessed endpoints, non-REST flows, or broken/offline explorers — these now warn
+  at runtime. Flipped `coingate`/`blockonomics` to `false` (endpoints not validated), the
+  generic-profile gateways (square/worldpay/bitpay/applepay/googlepay/…) to `false`, and
+  flagged `ltc` (502) and `scc` (redirect loop) explorers `false`. Bespoke trusted
+  integrations (stripe/paypal/coinbase/nowpayments/opennode/tebex/craftingstore/xsolla/woo
+  + reachable free crypto chains) are `verified:true`.
+
 ### Added
 - **Multi-chain detection adapters** (chains without a Blockbook explorer):
   - Blockscout/Etherscan adapter (EVM `txlist`/`tokentx`) → `BASE`, `ARBITRUM`,
