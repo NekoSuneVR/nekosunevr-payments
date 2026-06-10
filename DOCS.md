@@ -52,6 +52,11 @@ listByCategory('gateway-lightning'); // ['ZBDModule','STRIKEModule','SPEEDModule
 findByChain('bnb');                  // ['BNBModule','USDT_BSCModule','USDC_BSCModule']
 listFree();                          // every no-API-key crypto module
 getSystem('USDT_BSCModule');         // { category:'token', chain:'bnb', requiresKeys:[], token:{...} }
+
+// status lookups (every system has boolean verified/deprecated/explorerOffline):
+listUnverified();                    // endpoints not validated — warn / confirm before prod
+listDeprecated();                    // provider shut down / rebranding (Fortumo, Sellix, Sellpass)
+listExplorerOffline();               // explorer gone — supply your own (DGB, DOGEC, ZNZ)
 ```
 
 Categories: `crypto-evm`, `crypto-tron`, `crypto-solana`, `crypto-utxo`,

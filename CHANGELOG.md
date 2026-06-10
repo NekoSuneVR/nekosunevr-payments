@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   flagged `ltc` (502) and `scc` (redirect loop) explorers `false`. Bespoke trusted
   integrations (stripe/paypal/coinbase/nowpayments/opennode/tebex/craftingstore/xsolla/woo
   + reachable free crypto chains) are `verified:true`.
+- Every registry entry now carries explicit boolean `verified`/`deprecated`/`explorerOffline`.
+  Flagged `fortumo` deprecated (acquired by Boku). Added `listUnverified()`,
+  `listDeprecated()`, `listExplorerOffline()` registry helpers.
 
 ### Added
 - **Multi-chain detection adapters** (chains without a Blockbook explorer):
