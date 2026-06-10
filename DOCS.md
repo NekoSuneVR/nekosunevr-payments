@@ -231,6 +231,10 @@ ALIPAY_API_KEY=
 # New crypto / payout / lightning / gaming gateways
 COINGATE_API_TOKEN=
 BLOCKONOMICS_API_KEY=
+# Coinify uses API key + password + signing — supply via createPayment (not a simple env header)
+PAYNOW_API_KEY=
+ANTISTOCK_API_KEY=
+PAYSAFECARD_API_KEY=
 BTCPAY_API_KEY=            # + set NEKOPAY_BTCPAY_EXPLORER_URL or pass url
 CONFIRMO_API_KEY=
 ZBD_API_KEY=
@@ -357,6 +361,16 @@ accept prepaid vouchers *outside* Tebex.
 | **Sellpass** | Rebranding to **Antistock**, dev paused, trust warnings — `deprecated`. |
 | **Cash App Pay** | No general standalone REST API. Take it **via `SQUAREModule`** (Cash App Pay is prebuilt into Square's Web Payments SDK / Payments API — pass the Cash App Pay token as `source_id`), or apply for Cash App's Partner API. |
 | **Steam skins** (`SKINPAY`, `SKINSBACK`) | Accept CS2/Dota2 items as payment. Signed (HMAC) APIs — pass shop id + signature via `createPayment({ body, headers })`. Confirm methods at `skinpay.com/api-docs` / `skinsback.com`. |
+| **Coinify** (`COINIFYModule`) | Crypto payment gateway / buy-crypto. Base `api.coinify.com/v3/` (sandbox `api.sandbox.coinify.com/v3/`). Auth = API key + password + request signing; get keys in *Integration tools → API keys* and an IPN secret in *Online Store → IPN*. Docs: `coinify.readme.io`, merchant ref `merchant.coinify.com/docs/api`. |
+
+### EVM L2s / Base / Arbitrum / Optimism / Avalanche — not yet supported
+These chains have **no public Blockbook explorer**, which is what this library's EVM
+detection reads. They expose **Etherscan-family** APIs (one Etherscan-v2 key covers
+Base + Ethereum + Arbitrum + Optimism) and **Blockscout** (free public API, no key).
+chainlist.org lists only raw JSON-RPC endpoints. Supporting Base & co. therefore requires
+a **Blockscout / Etherscan-v2 adapter** (different response shape: `account&action=tokentx`
+/ `txlist`) — a planned addition. Until then, point an existing EVM module at a
+Blockbook-compatible endpoint via env override if you have one, or track these off-library.
 
 `verified:false` config-driven gateways (BTCPay, Confirmo, Cryptomus, OxaPay, Plisio,
 CoinPayments, Coinremitter, ZBD, Strike, Speed, Alby, PayNow, Sellpass): base URL + auth

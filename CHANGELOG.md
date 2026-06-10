@@ -52,6 +52,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `SUN`, `BTT`, `WIN`, `WTRX`, `NFT` (APENFT), `HTX`. Mixed decimals (WIN/WTRX/NFT = 6).
 - `COINBASEBUSINESSModule` for Coinbase's new Business/onchain Payment Link API; legacy
   `COINBASEModule` (Commerce) retained.
+- `COINIFYModule` (crypto payment / buy-crypto gateway) and `ANTISTOCKModule` (successor
+  to Sellpass).
+- DOCS: documented why Base/Arbitrum/Optimism/Avalanche aren't yet supported (no Blockbook;
+  need a Blockscout/Etherscan-v2 adapter).
 - `deprecated` registry flag. Marked `SELLIX` (reportedly seized 2024) and `SELLPASS`
   (rebranding to Antistock, paused) as deprecated.
 - Documented Cash App Pay via `SQUAREModule` (no standalone REST API exists).
