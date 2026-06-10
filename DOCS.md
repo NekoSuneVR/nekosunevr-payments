@@ -363,14 +363,23 @@ accept prepaid vouchers *outside* Tebex.
 | **Steam skins** (`SKINPAY`, `SKINSBACK`) | Accept CS2/Dota2 items as payment. Signed (HMAC) APIs — pass shop id + signature via `createPayment({ body, headers })`. Confirm methods at `skinpay.com/api-docs` / `skinsback.com`. |
 | **Coinify** (`COINIFYModule`) | Crypto payment gateway / buy-crypto. Base `api.coinify.com/v3/` (sandbox `api.sandbox.coinify.com/v3/`). Auth = API key + password + request signing; get keys in *Integration tools → API keys* and an IPN secret in *Online Store → IPN*. Docs: `coinify.readme.io`, merchant ref `merchant.coinify.com/docs/api`. |
 
-### EVM L2s / Base / Arbitrum / Optimism / Avalanche — not yet supported
-These chains have **no public Blockbook explorer**, which is what this library's EVM
-detection reads. They expose **Etherscan-family** APIs (one Etherscan-v2 key covers
-Base + Ethereum + Arbitrum + Optimism) and **Blockscout** (free public API, no key).
-chainlist.org lists only raw JSON-RPC endpoints. Supporting Base & co. therefore requires
-a **Blockscout / Etherscan-v2 adapter** (different response shape: `account&action=tokentx`
-/ `txlist`) — a planned addition. Until then, point an existing EVM module at a
-Blockbook-compatible endpoint via env override if you have one, or track these off-library.
+### Chains that need a new adapter (not yet supported)
+This library detects payments by reading **Blockbook/Insight** explorers. Chains without
+one need a dedicated adapter (a different fetch + response-mapping path). Planned:
+
+- **EVM L2s — Base, Arbitrum, Optimism, Avalanche, Fantom, etc.**: no Blockbook. They expose
+  **Etherscan-family** APIs (one Etherscan-v2 key covers Base+ETH+ARB+OP) and **Blockscout**
+  (free public API, no key). Needs a **Blockscout / Etherscan-v2 adapter**
+  (`account&action=tokentx` / `txlist`). Highest-value adapter — also unlocks their tokens.
+- **Solana (SOL + SPL tokens like USDC/USDT-SPL)**: completely different model (accounts +
+  program logs). Needs a **Solana RPC adapter** (`getSignaturesForAddress` → `getTransaction`,
+  parse native + SPL transfers). Free public RPC `api.mainnet-beta.solana.com` (rate-limited)
+  or Helius/Solscan free tier (key).
+- **Generic EVM JSON-RPC (publicnode.com, chainlist.org)**: an `eth_getLogs`-based adapter
+  as a fallback for any EVM chain without Blockscout.
+
+Until an adapter ships, point an existing module at a Blockbook-compatible endpoint via
+`NEKOPAY_<CHAIN>_EXPLORER_URL` if you have one, or track that chain off-library.
 
 `verified:false` config-driven gateways (BTCPay, Confirmo, Cryptomus, OxaPay, Plisio,
 CoinPayments, Coinremitter, ZBD, Strike, Speed, Alby, PayNow, Sellpass): base URL + auth
