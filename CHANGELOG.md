@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.2.0 - 2026-06-10
+### Changed
+- **Modular refactor**: split the 2,300-line `paymentgateway.js` into `core/` (utils,
+  PaymentAPI, ChainModule), `config/` (chains grouped by category, tokens), and
+  `gateways/registry.js`. `paymentgateway.js` is now a thin assembler — all existing
+  `<CHAIN>Module` imports keep working unchanged.
+
+### Added
+- New free crypto explorer modules: `DASHModule`, `ZECModule`, `BTGModule`,
+  `DGBModule`, `ETCModule`.
+- **Token registry + named token modules**: `USDT_ETH`, `USDC_ETH`, `USDT_BSC`,
+  `USDC_BSC`, `USDT_POL`, `USDC_POL`, `USDT_TRX`, `USDC_TRX`, plus node/staking tokens
+  `LPT_ETH`, `MYST_ETH`, `MYST_POL`. Add more in one line (`config/tokens.js`).
+- **Registry** (`getSystem`, `listByCategory`, `findByChain`, `listFree`,
+  `listCryptoModules`, `categories`) to discover which module handles which chain/gateway.
+- **Config-driven gateway framework**: add a REST gateway from `config/chains.js` alone
+  (base URL + `gatewayProfile` + `auth`), no bespoke code.
+- New gateways:
+  - Crypto: `COINGATE`, `BLOCKONOMICS`, `BTCPAY`, `CONFIRMO`, `CRYPTOMUS`, `OXAPAY`,
+    `PLISIO`, `COINPAYMENTS`, `COINREMITTER`, `GOURL`.
+  - Lightning: `ZBD`, `STRIKE`, `SPEED`, `ALBY`.
+  - Gaming/Discord commerce: `PAYNOW`, `SELLPASS`.
+  - Steam skins (CS2/Dota2 items as payment): `SKINPAY`, `SKINSBACK`.
+  - Regional/global PSP aggregators (one API → many local methods): `MOLLIE`,
+    `MERCADOPAGO`, `RAZORPAY`, `PAYSTACK`, `FLUTTERWAVE`, `CHECKOUTCOM`, `ADYEN`,
+    `KLARNA`, `REVOLUT`, `PAGSEGURO`, plus `PAYSAFECARD`.
+- Hosted gateways reorganized into category sub-groups (`fiatGateways`, `pspGateways`,
+  `cryptoGateways`, `lightningGateways`, `gamingGateways`, `skinsGateways`); registry
+  categories are now `gateway-fiat` / `-crypto` / `-payout` / `-lightning` / `-gaming` /
+  `-skins` (replacing the vaguer `gateway-hosted` / `gateway-generic`).
+- DOCS: added Tebex (Merchant-of-Record) setup section + how to add gateways.
+- More skin gateways: `SKINSCASH`, `PAYSKIN`, `SKINIFY` (vetted; `SKINWALLET` excluded — shut down).
+- High-value tokens: `WBTC`/`DAI`/`WETH`/`LINK`/`UNI`/`AAVE`/`SHIB` (ETH),
+  `WBNB`/`BTCB`/`ETH`/`CAKE` (BSC), `WMATIC`/`WETH`/`WBTC`/`DAI`/`LINK` (Polygon).
+  Contracts verified on-chain (WBTC = 8 decimals, BTCB = 18).
+- Bank transfer / open banking (`gateway-bank`): `WISE`, `GOCARDLESS`, `TRUELAYER`, `PLAID`.
+- **Unverified-gateway runtime warning**: modules flagged `verified:false` print a one-time
+  "use at your own risk" warning (silence with `NEKOPAY_SUPPRESS_UNVERIFIED_WARN=1`).
+  Trusted/established gateways stay silent.
+- DOCS §8b documents monetization networks (ad/offerwall + passive-income like Honeygain)
+  as out-of-scope (you earn, not accept) — not shipped as payment modules.
+- TRC-20 tokens on Tron (contracts verified on Tronscan): `USDD` (2.0), `TUSD`, `JST`,
+  `SUN`, `BTT`, `WIN`, `WTRX`, `NFT` (APENFT), `HTX`. Mixed decimals (WIN/WTRX/NFT = 6).
+- `COINBASEBUSINESSModule` for Coinbase's new Business/onchain Payment Link API; legacy
+  `COINBASEModule` (Commerce) retained.
+- `deprecated` registry flag. Marked `SELLIX` (reportedly seized 2024) and `SELLPASS`
+  (rebranding to Antistock, paused) as deprecated.
+- Documented Cash App Pay via `SQUAREModule` (no standalone REST API exists).
+- Per-chain explorer overrides via env vars (`NEKOPAY_<CHAIN>_EXPLORER_URL`,
+  `NEKOPAY_<CHAIN>_EXPLORER_ALT_URLS`) + endpoint cooldown/rotation for high traffic.
+- `DOCS.md` (setup + maintenance) and `API.md` (methods + webhooks/IPN); README rewritten.
+
+### Fixed (2026 audit)
+- CraftingStore base URL `v7` → `v2`.
+- Worldpay `api.worldpay.com` → `access.worldpay.com` (rebrand).
+- BitPay base `api.bitpay.com` → `bitpay.com`.
+- Paymentwall base now includes `/api/`; OFX base now `/v1/`.
+- Repointed `DASH` → `dash4.trezor.io` and `BTG` → `btgexplorer.com` (Trezor dropped the
+  old per-coin Blockbook hosts).
+- Flagged `DGB`, `DOGEC`, `ZNZ` as `explorerOffline` (public explorers gone / projects
+  dormant) — supply your own via env override.
+
 ## 1.0.0 - 2024-02-05
 ### Added
 - Changelog
