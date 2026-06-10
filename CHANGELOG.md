@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- **Multi-chain detection adapters** (chains without a Blockbook explorer):
+  - Blockscout/Etherscan adapter (EVM `txlist`/`tokentx`) → `BASE`, `ARBITRUM`,
+    `OPTIMISM`, `GNOSIS`, `AVAX`, `FTM` (native + tokens, free, no key).
+  - Solana RPC adapter (`getSignaturesForAddress`/`getTransaction`) → `SOL` + SPL tokens.
+  - Generic EVM JSON-RPC adapter (`eth_getLogs`) → `CRONOS` and any publicnode/chainlist
+    chain (token-only). All three live-tested against real endpoints.
+- New `crypto-solana` category; new tokens `USDC_BASE`/`USDC_ARBITRUM`/`USDC_OPTIMISM`,
+  `USDC_SOL`/`USDT_SOL`. Token registry now supports EVM, Tron, and Solana base chains.
+- DOCS §4a documents the adapters + one-line recipes to add any EVM/Solana chain.
+
 
 ## 1.2.0 - 2026-06-10
 ### Changed

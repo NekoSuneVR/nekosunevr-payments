@@ -54,9 +54,10 @@ listFree();                          // every no-API-key crypto module
 getSystem('USDT_BSCModule');         // { category:'token', chain:'bnb', requiresKeys:[], token:{...} }
 ```
 
-Categories: `crypto-evm`, `crypto-tron`, `crypto-utxo`, `crypto-steemfork`,
-`crypto-antelope`, `crypto-hiveengine`, `token`, `gateway-fiat`, `gateway-bank`,
-`gateway-crypto`, `gateway-payout`, `gateway-lightning`, `gateway-gaming`, `gateway-skins`.
+Categories: `crypto-evm`, `crypto-tron`, `crypto-solana`, `crypto-utxo`,
+`crypto-steemfork`, `crypto-antelope`, `crypto-hiveengine`, `token`, `gateway-fiat`,
+`gateway-bank`, `gateway-crypto`, `gateway-payout`, `gateway-lightning`, `gateway-gaming`,
+`gateway-skins`.
 
 Each registry entry also exposes `verified` (false = confirm the create/get endpoint
 before going live), `selfHosted`, `deprecated` (provider shut down / rebranding —
@@ -363,23 +364,36 @@ accept prepaid vouchers *outside* Tebex.
 | **Steam skins** (`SKINPAY`, `SKINSBACK`) | Accept CS2/Dota2 items as payment. Signed (HMAC) APIs — pass shop id + signature via `createPayment({ body, headers })`. Confirm methods at `skinpay.com/api-docs` / `skinsback.com`. |
 | **Coinify** (`COINIFYModule`) | Crypto payment gateway / buy-crypto. Base `api.coinify.com/v3/` (sandbox `api.sandbox.coinify.com/v3/`). Auth = API key + password + request signing; get keys in *Integration tools → API keys* and an IPN secret in *Online Store → IPN*. Docs: `coinify.readme.io`, merchant ref `merchant.coinify.com/docs/api`. |
 
-### Chains that need a new adapter (not yet supported)
-This library detects payments by reading **Blockbook/Insight** explorers. Chains without
-one need a dedicated adapter (a different fetch + response-mapping path). Planned:
+### Multi-chain adapters (Base / L2s / Solana) — supported
 
-- **EVM L2s — Base, Arbitrum, Optimism, Avalanche, Fantom, etc.**: no Blockbook. They expose
-  **Etherscan-family** APIs (one Etherscan-v2 key covers Base+ETH+ARB+OP) and **Blockscout**
-  (free public API, no key). Needs a **Blockscout / Etherscan-v2 adapter**
-  (`account&action=tokentx` / `txlist`). Highest-value adapter — also unlocks their tokens.
-- **Solana (SOL + SPL tokens like USDC/USDT-SPL)**: completely different model (accounts +
-  program logs). Needs a **Solana RPC adapter** (`getSignaturesForAddress` → `getTransaction`,
-  parse native + SPL transfers). Free public RPC `api.mainnet-beta.solana.com` (rate-limited)
-  or Helius/Solscan free tier (key).
-- **Generic EVM JSON-RPC (publicnode.com, chainlist.org)**: an `eth_getLogs`-based adapter
-  as a fallback for any EVM chain without Blockscout.
+Chains without a Blockbook explorer use one of three adapters (set via `explorerApi` /
+`isSolana` in config). All bundled ones are free, no API key. Tokens work via the registry.
 
-Until an adapter ships, point an existing module at a Blockbook-compatible endpoint via
-`NEKOPAY_<CHAIN>_EXPLORER_URL` if you have one, or track that chain off-library.
+| Adapter | `config` | Bundled chains | Native + tokens? |
+|---|---|---|---|
+| **Blockscout** | `isEVM:true, explorerApi:'blockscout'` | `BASE`, `ARBITRUM`, `OPTIMISM`, `GNOSIS` | both |
+| **Etherscan/Routescan** | `isEVM:true, explorerApi:'etherscan'` | `AVAX`, `FTM` (Routescan) | both |
+| **EVM JSON-RPC** | `isEVM:true, explorerApi:'evmrpc'` | `CRONOS` (publicnode) | **tokens only** (eth_getLogs; no native) |
+| **Solana RPC** | `isSolana:true` | `SOL` (+ `USDC_SOL`, `USDT_SOL`) | SOL + SPL tokens |
+
+Add another EVM chain in one config line:
+```js
+// Blockscout (preferred — native + tokens, no key):
+linea: { url: 'https://explorer.linea.build/api/', isEVM: true, explorerApi: 'blockscout', evmDecimals: 18 },
+// Etherscan-v2 unified key (covers Base/ETH/ARB/OP): set ETHERSCAN_API_KEY + chain id:
+scroll: { url: 'https://api.etherscan.io/v2/api/', isEVM: true, explorerApi: 'etherscan', etherscanChainId: 534352, apiKeyEnv: 'ETHERSCAN_API_KEY', evmDecimals: 18 },
+// Generic JSON-RPC fallback (any chain from publicnode.com / chainlist.org) — tokens only:
+mantle: { url: 'https://mantle-rpc.publicnode.com/', isEVM: true, explorerApi: 'evmrpc', evmDecimals: 18 },
+```
+Then add tokens for it in `config/tokens.js` (e.g. `USDC_LINEA: { chain:'linea', symbol:'USDC', contract:'0x...', decimals:6 }`).
+
+Notes:
+- **EVM-RPC is token-only** (detects ERC-20 Transfer events via `eth_getLogs` over the last
+  `evmRpcLookback` blocks, default 50000). Native-coin detection needs Blockscout/Etherscan.
+- **Solana**: public RPC `api.mainnet-beta.solana.com` is rate-limited — for volume set
+  `NEKOPAY_SOL_EXPLORER_URL` to a Helius/QuickNode endpoint. SPL matching keys on the
+  recipient **token-account owner**, so pass the buyer/merchant **wallet** address.
+- Etherscan-family endpoints can rate-limit; the usual env override + cooldown applies.
 
 `verified:false` config-driven gateways (BTCPay, Confirmo, Cryptomus, OxaPay, Plisio,
 CoinPayments, Coinremitter, ZBD, Strike, Speed, Alby, PayNow, Sellpass): base URL + auth

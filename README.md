@@ -55,7 +55,9 @@ listFree();                          // all no-API-key crypto modules
 ### Free crypto (explorer-backed, no API key)
 | Family | Modules |
 |---|---|
-| EVM | `BNB`, `POL`, `ETH`, `ETC` |
+| EVM (Blockbook) | `BNB`, `POL`, `ETH`, `ETC` |
+| EVM L2s / others (Blockscout, Routescan, RPC) | `BASE`, `ARBITRUM`, `OPTIMISM`, `GNOSIS`, `AVAX`, `FTM`, `CRONOS` |
+| Solana | `SOL` (+ SPL tokens) |
 | Tron | `TRX`, `TRON` |
 | UTXO / PoS | `BTC`, `BCH`, `LTC`, `DOGE`, `DASH`, `ZEC`, `BTG`, `PIVX`, `FLS`, `SAPP`, `MOBIC`, `SAGA`, `PNY`, `MONK`, `UCR`, `KYAN`, `DASHD`, `OWO`, `SEVENSEVENSEVEN`, `CFL`, `BIR`, `AZR`, `BECN`, `SCC` |
 | Steem-family | `HIVE`, `HBD`, `STEEM`, `SBD`, `BLURT` |
@@ -63,10 +65,12 @@ listFree();                          // all no-API-key crypto modules
 | Hive-Engine | `HIVEENGINE` |
 | _Offline (supply your own explorer)_ | `DGB`, `DOGEC`, `ZNZ` — see [DOCS §6](DOCS.md#6-high-traffic--self-hosted-explorers) |
 
-### Tokens (ERC-20 / BEP-20 / TRC-20)
-`USDT_ETH`, `USDC_ETH`, `USDT_BSC`, `USDC_BSC`, `USDT_POL`, `USDC_POL`, `USDT_TRX`,
-`USDC_TRX`, `LPT_ETH`, `MYST_ETH`, `MYST_POL`. Add more in one line — see
-[DOCS §5](DOCS.md#5-adding-more-down-the-line).
+### Tokens (ERC-20 / BEP-20 / TRC-20 / L2 / SPL)
+Stablecoins + high-value tokens on **ETH/BSC/POL** (USDT, USDC, DAI, WBTC, WETH, LINK,
+UNI, AAVE, SHIB, WBNB, BTCB, CAKE, …), a full **TRC-20** set on Tron (USDT, USDC, USDD,
+TUSD, JST, SUN, BTT, WIN, WTRX, NFT, HTX), **L2** USDC (`USDC_BASE`, `USDC_ARBITRUM`,
+`USDC_OPTIMISM`), **Solana SPL** (`USDC_SOL`, `USDT_SOL`), and node tokens (`LPT_ETH`,
+`MYST_ETH`/`MYST_POL`). Add more in one line — see [DOCS §5](DOCS.md#5-adding-more-down-the-line).
 
 ### Crypto payment gateways
 `COINBASE`, `NOWPAYMENTS`, `OPENNODE`, `GOURL`, `BITPAY`, `COINGATE`, `BLOCKONOMICS`,
