@@ -400,6 +400,53 @@ Notes:
   recipient **token-account owner**, so pass the buyer/merchant **wallet** address.
 - Etherscan-family endpoints can rate-limit; the usual env override + cooldown applies.
 
+### Solana Pay (`SOLANAPAYModule`) — request/verify checkout
+
+The `SOL` module above *watches* a wallet for incoming transfers and matches purely by
+amount — fine for one payment at a time, but two buyers paying the same amount collide.
+`SOLANAPAYModule` uses the official [`@solana/pay`](https://github.com/solana-foundation/pay)
+flow instead: a `solana:` request URL/QR carrying a unique per-order **reference** public
+key, verified later by that reference. Free — needs only a Solana RPC (no API key).
+
+Requires the optional deps (loaded lazily, only when you use Solana Pay):
+```bash
+npm install @solana/pay @solana/web3.js bignumber.js
+```
+
+```js
+const { SOLANAPAYModule } = require('nekosunevr-payments');
+const pay = new SOLANAPAYModule();
+
+// 1) Create the request. KEEP `reference` — it identifies this order.
+const { url, reference } = await pay.createPayment({
+  recipient: 'YourMerchantWalletPubkey...',   // your wallet (or `address` / `to`)
+  amount: 0.1,                                 // decimal SOL (UI units, not lamports)
+  label: 'NekoSune Store',
+  message: 'Order #1234',
+  memo: 'order-1234'                           // optional on-chain memo
+});
+// url -> show as a QR. Optional in Node:
+// const qr = pay.createSolanaPayQR(url); const png = await qr.getRawData('png');
+
+// 2) Verify it (poll). The reference is passed as the 4th arg (the "memo"/reference slot):
+const res = await pay.existsTransaction(recipient, 0.1, 0 /*sinceTs*/, reference);
+// -> { exists, txid, conf }   exists:true once findReference + validateTransfer succeed
+
+// SPL tokens (USDC/USDT/…): pass the mint via `splToken`; verify the same way.
+const usdc = await pay.createPayment({
+  recipient: 'YourMerchantWalletPubkey...',
+  amount: 25,                                  // 25 USDC (decimal UI units)
+  splToken: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+});
+```
+
+Notes:
+- Public RPC `api.mainnet-beta.solana.com` is rate-limited — set
+  `NEKOPAY_SOLANAPAY_EXPLORER_URL` (or pass `url`) to a Helius/QuickNode endpoint for volume.
+- `amount` is the **decimal** amount shown in the URL (e.g. `0.1` SOL, `25` USDC), matching
+  the Solana Pay spec — not lamports/base units.
+- `minimumConfirmations` is supported as the 5th `existsTransaction` arg (finalized ⇒ 32).
+
 `verified:false` config-driven gateways (BTCPay, Confirmo, Cryptomus, OxaPay, Plisio,
 CoinPayments, Coinremitter, ZBD, Strike, Speed, Alby, PayNow, Sellpass): base URL + auth
 are set, but **confirm the exact create/get endpoint** against the provider's current

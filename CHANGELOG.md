@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `listDeprecated()`, `listExplorerOffline()` registry helpers.
 
 ### Added
+- **Solana Pay** (`SOLANAPAYModule`) — official [`@solana/pay`](https://github.com/solana-foundation/pay)
+  request/verify checkout flow. `createPayment({ recipient, amount, splToken?, reference?,
+  label?, message?, memo? })` returns a `solana:` request URL + a unique per-order
+  `reference` pubkey (and `createSolanaPayQR()` for the QR); `existsTransaction(recipient,
+  amount, ts, reference)` verifies via `findReference` + `validateTransfer`. Unlike the
+  address-watch `SOL` chain, the reference key identifies each order so same-amount payments
+  never collide. Free (RPC only; `NEKOPAY_SOLANAPAY_EXPLORER_URL` to repoint). `@solana/pay`,
+  `@solana/web3.js`, `bignumber.js` are loaded lazily (clear install hint if missing).
 - **Multi-chain detection adapters** (chains without a Blockbook explorer):
   - Blockscout/Etherscan adapter (EVM `txlist`/`tokentx`) → `BASE`, `ARBITRUM`,
     `OPTIMISM`, `GNOSIS`, `AVAX`, `FTM` (native + tokens, free, no key).

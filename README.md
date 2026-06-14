@@ -57,7 +57,7 @@ listFree();                          // all no-API-key crypto modules
 |---|---|
 | EVM (Blockbook) | `BNB`, `POL`, `ETH`, `ETC` |
 | EVM L2s / others (Blockscout, Routescan, RPC) | `BASE`, `ARBITRUM`, `OPTIMISM`, `GNOSIS`, `AVAX`, `FTM`, `CRONOS` |
-| Solana | `SOL` (+ SPL tokens) |
+| Solana | `SOL` (+ SPL tokens); `SOLANAPAY` (request/verify checkout via `@solana/pay`) |
 | Tron | `TRX`, `TRON` |
 | UTXO / PoS | `BTC`, `BCH`, `LTC`, `DOGE`, `DASH`, `ZEC`, `BTG`, `PIVX`, `FLS`, `SAPP`, `MOBIC`, `SAGA`, `PNY`, `MONK`, `UCR`, `KYAN`, `DASHD`, `OWO`, `SEVENSEVENSEVEN`, `CFL`, `BIR`, `AZR`, `BECN`, `SCC` |
 | Steem-family | `HIVE`, `HBD`, `STEEM`, `SBD`, `BLURT` |
